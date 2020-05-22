@@ -211,7 +211,7 @@
 <p> hetero：非蛋白质和核酸的部分</p>
 <p> carbon、hydrogen、oxygen、nitrogen、sulfur：相应元素。对于其它元素没法这么输入元素名来选择</p>
 <p>这些单关键词实际上可以在Representation界面里的Selections标签页里的Singlewords直接看到，可见可以用的单关键词远不止上述这些。有些单关键词其实是复合选择语句，比如你选中hetero，就会看到其定义其实是not (protein or nucleic)。</p>
-<p><img src="1.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="/images/vmd_1.png" srcset="/img/loading.gif" alt=""></p>
 <p>注意有些情况下，单关键词未必能如实选择相应的区域。比如你载入的结构里有水，如果输入文件里水的残基名很特殊，比如叫FFF，那么VMD就不会把这个残基识别成水分子，用water关键词的时候也没法选中这些水。</p>
 <h2 id="3-一般关键词"><a href="#3-一般关键词" class="headerlink" title="3 一般关键词"></a><strong>3 一般关键词</strong></h2><p>用下面这些关键词可以通过属性选取原子，都是后面要接参数的</p>
 <p> name：原子名。例：name OW选择原子名叫OW的原子</p>
@@ -236,7 +236,7 @@
 <p> radius：原子半径</p>
 <p>…等等</p>
 <p>每个属性后面能接什么值，在Selections标签页里都能看到，不确定的话看一眼便知：</p>
-<p><img src="2.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="/images/vmd_2.png" srcset="/img/loading.gif" alt=""></p>
 <p>许多属性并非对于任何输入文件都能用。比如：</p>
 <p>·使用charge属性，必须输入的文件里体现了原子电荷才行，比如可以用mol2或pqr，后者详见《使用Multiwfn+VMD以原子着色方式表现原子电荷、自旋布居、电荷转移、简缩福井函数》（<a href="http://sobereva.com/425" target="_blank" rel="noopener">http://sobereva.com/425</a>）。</p>
 <p>·使用beta属性，通常需要用pdb文件作为输入，因为里面专门有一列记录B因子信息。</p>
