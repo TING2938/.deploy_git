@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Matlab绘制图组 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>TING2938</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="iconfont icon-home-fill"></i>
+              Home</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              Archives</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">
+              <i class="iconfont icon-category-fill"></i>
+              Categories</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">
+              <i class="iconfont icon-tags-fill"></i>
+              Tags</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/links/">
+              <i class="iconfont icon-link-fill"></i>
+              Links</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2020-05-19 08:25">
+                    May 19, 2020 am
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    696 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    12
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们在用Matlab的<code>subplot</code>函数绘制图组时可能会发现子图之间的间距不太好看，可以通过<code>set(&#39;Position&#39;, [l, b, w, h])</code>函数来分别调整，比较麻烦，这里我写了一个函数<code>subplot_adjust</code>来简化这一过程。</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>function <code>subplots_adjust(row, col, varargin)</code></p>
+<p>Tune the subplot layout.</p>
+<p>The parameter meanings (and suggested defaults) are</p>
+<pre><code>left = 0.12    # the left side of the subplots of the figure
+bottom = 0.138 # the bottom of the subplots of the figure
+width = 0.8    # the width of the subplots of the figure
+hight = 0.78   # the hight of the subplots of the figure
+wspace = 0.12  # the amount of width reserved for space between subplots,
+               # expressed as a fraction of the average axis width
+hspace = 0.1   # the amount of height reserved for space between subplots,
+               # expressed as a fraction of the average axis height
+supPosition = [0.075, 0.08, 0.9, 0.85] 
+               # [left, bottom, width, hight]
+               # super axes position, which controls position of
+               # supxlabel, supylabel and suptitle.</code></pre><p>在用<code>subplot</code>画完图组后，直接在最后面加上<code>subplot_adjust</code>即可，例如：</p>
+<pre><code class="hljs matlab">x = <span class="hljs-built_in">linspace</span>(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>);
+y1 = <span class="hljs-built_in">sin</span>(x);
+y2 = <span class="hljs-built_in">cos</span>(x);
+<span class="hljs-built_in">figure</span>(<span class="hljs-string">'Position'</span>, [<span class="hljs-number">10</span>, <span class="hljs-number">50</span>, <span class="hljs-number">400</span>, <span class="hljs-number">550</span>]);
+subplot(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+<span class="hljs-built_in">plot</span>(x, y1)
+subplot(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)
+<span class="hljs-built_in">plot</span>(x, y2)
+ax = subplots_adjust(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-string">'hspace'</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'left'</span>, <span class="hljs-number">0.2</span>, ...
+                    <span class="hljs-string">'width'</span>, <span class="hljs-number">0.75</span>, <span class="hljs-string">'supPosition'</span>, [<span class="hljs-number">0.1</span>, <span class="hljs-number">0.08</span>, <span class="hljs-number">0.95</span>, <span class="hljs-number">0.85</span>]);
+xlabel(ax, <span class="hljs-string">'xlabel'</span>)
+ylabel(ax, <span class="hljs-string">'ylabel'</span>)
+title(ax, <span class="hljs-string">'Title'</span>)</code></pre>
+<p>绘制2行1列图组，设置两子图之间纵向间距为0，结果如下：</p>
+<div align=center>
+<img src="subplot_adjust.png" srcset="/img/loading.gif" width="50%" height="50%">
+</div>
+
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="/download/subplot_adjust.m" download>Download File</a></p>
+<p><a href="/download/subplot_adjust.m">点击下载subplot_adjust.m</a></p>
+<pre><code class="hljs matlab"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ax</span> = <span class="hljs-title">subplots_adjust</span><span class="hljs-params">(row, col, varargin)</span></span>
+<span class="hljs-comment">%% function subplots_adjust(row, col, varargin)</span>
+<span class="hljs-comment">% Tune the subplot layout.</span>
+<span class="hljs-comment">% </span>
+<span class="hljs-comment">% The parameter meanings (and suggested defaults) are::</span>
+<span class="hljs-comment">% </span>
+<span class="hljs-comment">%   left = 0.12    # the left side of the subplots of the figure</span>
+<span class="hljs-comment">%   bottom = 0.138 # the bottom of the subplots of the figure</span>
+<span class="hljs-comment">%   width = 0.8    # the width of the subplots of the figure</span>
+<span class="hljs-comment">%   hight = 0.78   # the hight of the subplots of the figure</span>
+<span class="hljs-comment">%   wspace = 0.12  # the amount of width reserved for space between subplots,</span>
+<span class="hljs-comment">%                  # expressed as a fraction of the average axis width</span>
+<span class="hljs-comment">%   hspace = 0.1   # the amount of height reserved for space between subplots,</span>
+<span class="hljs-comment">%                  # expressed as a fraction of the average axis height</span>
+<span class="hljs-comment">%   supPosition = [0.075, 0.08, 0.9, 0.85] </span>
+<span class="hljs-comment">%                  # [left, bottom, width, hight]</span>
+<span class="hljs-comment">%                  # super axes position, which controls position of</span>
+<span class="hljs-comment">%                  # supxlabel, supylabel and suptitle.</span>
+<span class="hljs-comment">%</span>
+<span class="hljs-comment">% Example:</span>
+<span class="hljs-comment">% x = linspace(0, 10);</span>
+<span class="hljs-comment">% y1 = sin(x);</span>
+<span class="hljs-comment">% y2 = cos(x);</span>
+<span class="hljs-comment">% figure('Position', [10, 50, 400, 550]);</span>
+<span class="hljs-comment">% subplot(2, 1, 1)</span>
+<span class="hljs-comment">% plot(x, y1)</span>
+<span class="hljs-comment">% subplot(2, 1, 2)</span>
+<span class="hljs-comment">% plot(x, y2)</span>
+<span class="hljs-comment">% ax = subplots_adjust(2, 1, 'hspace', 0, 'left', 0.2, ...</span>
+<span class="hljs-comment">%                      'width', 0.75, 'supPosition', [0.1, 0.08, 0.95, 0.85]);</span>
+<span class="hljs-comment">% xlabel(ax, 'xlabel')</span>
+<span class="hljs-comment">% ylabel(ax, 'ylabel')</span>
+<span class="hljs-comment">% title(ax, 'Title')</span>
+
+p = inputParser;
+addRequired(p, <span class="hljs-string">'row'</span>);
+addRequired(p, <span class="hljs-string">'col'</span>);
+addParameter(p, <span class="hljs-string">'wspace'</span>, <span class="hljs-number">0.12</span>);
+addParameter(p, <span class="hljs-string">'hspace'</span>, <span class="hljs-number">0.1</span>);
+addParameter(p, <span class="hljs-string">'left'</span>, <span class="hljs-number">0.12</span>);
+addParameter(p, <span class="hljs-string">'bottom'</span>, <span class="hljs-number">0.138</span>);
+addParameter(p, <span class="hljs-string">'width'</span>, <span class="hljs-number">0.8</span>);
+addParameter(p, <span class="hljs-string">'hight'</span>, <span class="hljs-number">0.78</span>);
+addParameter(p, <span class="hljs-string">'supPosition'</span>, [<span class="hljs-number">0.075</span>, <span class="hljs-number">0.08</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">0.85</span>]);
+parse(p, row, col, varargin&#123;:&#125;);
+
+left   = p.Results.left;
+bottom = p.Results.bottom;
+width  = p.Results.width;
+hight  = p.Results.hight;
+
+space = [p.Results.wspace, p.Results.hspace];
+
+eachx = (width-(col<span class="hljs-number">-1</span>)*space(<span class="hljs-number">1</span>)) / col;
+eachy = (hight-(row<span class="hljs-number">-1</span>)*space(<span class="hljs-number">2</span>)) / row;
+<span class="hljs-keyword">for</span> <span class="hljs-built_in">i</span>=<span class="hljs-number">1</span>:row
+    <span class="hljs-keyword">for</span> <span class="hljs-built_in">j</span>=<span class="hljs-number">1</span>:col
+        h = subplot(row, col, (<span class="hljs-built_in">i</span><span class="hljs-number">-1</span>)*col+<span class="hljs-built_in">j</span>);
+        set(h, <span class="hljs-string">'position'</span>, [left+(<span class="hljs-built_in">j</span><span class="hljs-number">-1</span>)*(eachx+space(<span class="hljs-number">1</span>)), bottom+(row-<span class="hljs-built_in">i</span>)*(eachy+space(<span class="hljs-number">2</span>)), eachx, eachy]);
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">j</span> ~= <span class="hljs-number">1</span> &amp;&amp; space(<span class="hljs-number">1</span>) == <span class="hljs-number">0</span>
+            set(h, <span class="hljs-string">'YTickLabel'</span>, &#123;&#125;);
+        <span class="hljs-keyword">end</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">i</span> ~= row &amp;&amp; space(<span class="hljs-number">2</span>) == <span class="hljs-number">0</span>
+            set(h, <span class="hljs-string">'XTickLabel'</span>, &#123;&#125;);
+        <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+
+ax = axes(<span class="hljs-string">'Units'</span>, <span class="hljs-string">'Normal'</span>, <span class="hljs-string">'Position'</span>, p.Results.supPosition, <span class="hljs-string">'Visible'</span>, <span class="hljs-string">'off'</span>);
+ax.XTickLabel = &#123;&#125;;
+ax.YTickLabel = &#123;&#125;;
+ax.XLabel.Visible = <span class="hljs-string">'on'</span>;
+ax.YLabel.Visible = <span class="hljs-string">'on'</span>;
+ax.Title.Visible = <span class="hljs-string">'on'</span>;
+
+<span class="hljs-keyword">end</span></code></pre>
+
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Program/">Program</a>
+                    
+                      <a class="hover-with-bg" href="/categories/Research/">Research</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Matlab/">Matlab</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/19/Python%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python线程池的创建和使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.14/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "MfqMCE7bV2FERa8qRoCPLY2f-gzGzoHsz",
+        app_key: "DtsHTEOjSeUmVFcPEUnoyEqR",
+        placeholder: "What to say",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["昵称"],
+        pageSize: "10",
+        lang: "en",
+        highlight: true,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?a42297b398451c11cf9852c2dfa19253";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Matlab绘制图组&nbsp;",
+      ],
+      cursorChar: "😘",
+      typeSpeed: 50,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

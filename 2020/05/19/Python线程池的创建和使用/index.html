@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Python线程池的创建和使用 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>TING2938</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="iconfont icon-home-fill"></i>
+              Home</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              Archives</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">
+              <i class="iconfont icon-category-fill"></i>
+              Categories</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">
+              <i class="iconfont icon-tags-fill"></i>
+              Tags</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/links/">
+              <i class="iconfont icon-link-fill"></i>
+              Links</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2020-05-19 08:25">
+                    May 19, 2020 am
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    1.7k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    22
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h3 id="✨-前言"><a href="#✨-前言" class="headerlink" title="✨ 前言"></a>✨ 前言</h3><p>从Python3.2开始，标准库为我们提供了 concurrent.futures 模块，它提供了 ThreadPoolExecutor (线程池)和ProcessPoolExecutor (进程池)两个类。</p>
+<p>相比 threading 等模块，该模块通过 submit 返回的是一个 future 对象，它是一个未来可期的对象，通过它可以获悉线程的状态主线程(或进程)中可以获取某一个线程(进程)执行的状态或者某一个任务执行的状态及返回值：</p>
+<ol>
+<li>主线程可以获取某一个线程（或者任务的）的状态，以及返回值。</li>
+<li>当一个线程完成的时候，主线程能够立即知道。</li>
+<li>让多线程和多进程的编码接口一致。</li>
+</ol>
+<h3 id="✨-线程池的基本使用"><a href="#✨-线程池的基本使用" class="headerlink" title="✨ 线程池的基本使用"></a>✨ 线程池的基本使用</h3><pre><code class="hljs python"><span class="hljs-comment"># coding: utf-8</span>
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">import</span> time
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">spider</span><span class="hljs-params">(page)</span>:</span>
+    time.sleep(page)
+    print(<span class="hljs-string">f"crawl task<span class="hljs-subst">&#123;page&#125;</span> finished"</span>)
+    <span class="hljs-keyword">return</span> page
+
+<span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">5</span>) <span class="hljs-keyword">as</span> t:  <span class="hljs-comment"># 创建一个最大容纳数量为5的线程池</span>
+    task1 = t.submit(spider, <span class="hljs-number">1</span>)
+    task2 = t.submit(spider, <span class="hljs-number">2</span>)  <span class="hljs-comment"># 通过submit提交执行的函数到线程池中</span>
+    task3 = t.submit(spider, <span class="hljs-number">3</span>)
+
+    print(<span class="hljs-string">f"task1: <span class="hljs-subst">&#123;task1.done()&#125;</span>"</span>)  <span class="hljs-comment"># 通过done来判断线程是否完成</span>
+    print(<span class="hljs-string">f"task2: <span class="hljs-subst">&#123;task2.done()&#125;</span>"</span>)
+    print(<span class="hljs-string">f"task3: <span class="hljs-subst">&#123;task3.done()&#125;</span>"</span>)
+
+    time.sleep(<span class="hljs-number">2.5</span>)
+    print(<span class="hljs-string">f"task1: <span class="hljs-subst">&#123;task1.done()&#125;</span>"</span>)
+    print(<span class="hljs-string">f"task2: <span class="hljs-subst">&#123;task2.done()&#125;</span>"</span>)
+    print(<span class="hljs-string">f"task3: <span class="hljs-subst">&#123;task3.done()&#125;</span>"</span>)
+    print(task1.result())  <span class="hljs-comment"># 通过result来获取返回值</span></code></pre>
+
+<h5 id="执行结果如下"><a href="#执行结果如下" class="headerlink" title="执行结果如下:"></a>执行结果如下:</h5><pre><code class="hljs plain">task1: False
+task2: False
+task3: False
+crawl task1 finished
+crawl task2 finished
+task1: True
+task2: True
+task3: False
+1
+crawl task3 finished</code></pre>
+
+<ol>
+<li><p>使用 with 语句 ，通过 ThreadPoolExecutor 构造实例，同时传入 max_workers 参数来设置线程池中最多能同时运行的线程数目。</p>
+</li>
+<li><p>使用 submit 函数来提交线程需要执行的任务到线程池中，并返回该任务的句柄（类似于文件、画图），注意 submit() 不是阻塞的，而是立即返回。</p>
+</li>
+<li><p>通过使用 done() 方法判断该任务是否结束。上面的例子可以看出，提交任务后立即判断任务状态，显示四个任务都未完成。在延时2.5后，task1 和 task2 执行完毕，task3 仍在执行中。</p>
+</li>
+<li><p>使用 result() 方法可以获取任务的返回值。</p>
+</li>
+</ol>
+<h3 id="✨-主要方法："><a href="#✨-主要方法：" class="headerlink" title="✨ 主要方法："></a>✨ 主要方法：</h3><h4 id="wait"><a href="#wait" class="headerlink" title="wait"></a>wait</h4><pre><code class="hljs plain">wait(fs, timeout&#x3D;None, return_when&#x3D;ALL_COMPLETED)</code></pre>
+
+<p>wait 接受三个参数： fs: 表示需要执行的序列 timeout: 等待的最大时间，如果超过这个时间即使线程未执行完成也将返回 return_when：表示wait返回结果的条件，默认为 ALL_COMPLETED 全部执行完成再返回</p>
+<p>还是用上面那个例子来熟悉用法 示例：</p>
+<pre><code class="hljs python"><span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor, wait, FIRST_COMPLETED, ALL_COMPLETED
+<span class="hljs-keyword">import</span> time
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">spider</span><span class="hljs-params">(page)</span>:</span>
+    time.sleep(page)
+    print(<span class="hljs-string">f"crawl task<span class="hljs-subst">&#123;page&#125;</span> finished"</span>)
+    <span class="hljs-keyword">return</span> page
+
+<span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">5</span>) <span class="hljs-keyword">as</span> t: 
+    all_task = [t.submit(spider, page) <span class="hljs-keyword">for</span> page <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>)]
+    wait(all_task, return_when=FIRST_COMPLETED)
+    print(<span class="hljs-string">'finished'</span>)
+    print(wait(all_task, timeout=<span class="hljs-number">2.5</span>))
+
+<span class="hljs-comment"># 运行结果</span>
+crawl task1 finished
+finished
+crawl task2 finished
+crawl task3 finished
+DoneAndNotDoneFutures(done=&#123;, , &#125;, not_done=&#123;&#125;)
+crawl task4 finished</code></pre>
+
+<ol>
+<li>代码中返回的条件是：当完成第一个任务的时候，就停止等待，继续主线程任务</li>
+<li>由于设置了延时， 可以看到最后只有 task4 还在运行中</li>
+</ol>
+<h4 id="as-completed"><a href="#as-completed" class="headerlink" title="as_completed"></a>as_completed</h4><p>上面虽然提供了判断任务是否结束的方法，但是不能在主线程中一直判断啊。最好的方法是当某个任务结束了，就给主线程返回结果，而不是一直判断每个任务是否结束。</p>
+<p>ThreadPoolExecutorThreadPoolExecutor 中 的 as_completed() 就是这样一个方法，当子线程中的任务执行完后，直接用 result() 获取返回结果</p>
+<p>用法如下：</p>
+<pre><code class="hljs python"><span class="hljs-comment"># coding: utf-8</span>
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor, as_completed
+<span class="hljs-keyword">import</span> time
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">spider</span><span class="hljs-params">(page)</span>:</span>
+    time.sleep(page)
+    print(<span class="hljs-string">f"crawl task<span class="hljs-subst">&#123;page&#125;</span> finished"</span>)
+    <span class="hljs-keyword">return</span> page
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">5</span>) <span class="hljs-keyword">as</span> t:
+        obj_list = []
+        <span class="hljs-keyword">for</span> page <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>):
+            obj = t.submit(spider, page)
+            obj_list.append(obj)
+
+        <span class="hljs-keyword">for</span> future <span class="hljs-keyword">in</span> as_completed(obj_list):
+            data = future.result()
+            print(<span class="hljs-string">f"main: <span class="hljs-subst">&#123;data&#125;</span>"</span>)
+
+<span class="hljs-comment"># 执行结果</span>
+crawl task1 finished
+main: <span class="hljs-number">1</span>
+crawl task2 finished
+main: <span class="hljs-number">2</span>
+crawl task3 finished
+main: <span class="hljs-number">3</span>
+crawl task4 finished
+main: <span class="hljs-number">4</span></code></pre>
+
+<p>as_completed() 方法是一个生成器，在没有任务完成的时候，会一直阻塞，除非设置了 timeout。</p>
+<p>当有某个任务完成的时候，会 yield 这个任务，就能执行 for 循环下面的语句，然后继续阻塞住，循环到所有的任务结束。同时，先完成的任务会先返回给主线程。</p>
+<h4 id="map"><a href="#map" class="headerlink" title="map"></a>map</h4><pre><code class="hljs plain">map(fn, *iterables, timeout&#x3D;None)</code></pre>
+
+<p>fn： 第一个参数 fn 是需要线程执行的函数； iterables：第二个参数接受一个可迭代对象； timeout： 第三个参数 timeout 跟 wait() 的 timeout 一样，但由于 map 是返回线程执行的结果，如果 timeout小于线程执行时间会抛异常 TimeoutError。</p>
+<p>用法如下:</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> time
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">spider</span><span class="hljs-params">(page)</span>:</span>
+    time.sleep(page)
+    <span class="hljs-keyword">return</span> page
+
+start = time.time()
+executor = ThreadPoolExecutor(max_workers=<span class="hljs-number">4</span>)
+
+i = <span class="hljs-number">1</span>
+<span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> executor.map(spider, [<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>]):
+    print(<span class="hljs-string">"task&#123;&#125;:&#123;&#125;"</span>.format(i, result))
+    i += <span class="hljs-number">1</span>
+
+<span class="hljs-comment">#  运行结果</span>
+task1:<span class="hljs-number">2</span>
+task2:<span class="hljs-number">3</span>
+task3:<span class="hljs-number">1</span>
+task4:<span class="hljs-number">4</span></code></pre>
+
+<p>使用 map 方法，无需提前使用 submit 方法，map 方法与 python 高阶函数 map 的含义相同，都是将序列中的每个元素都执行同一个函数。</p>
+<p>上面的代码对列表中的每个元素都执行 spider() 函数，并分配各线程池。</p>
+<p>可以看到执行结果与上面的 as_completed() 方法的结果不同，输出顺序和列表的顺序相同，就算 1s 的任务先执行完成，也会先打印前面提交的任务返回的结果。</p>
+<h3 id="✨-实战"><a href="#✨-实战" class="headerlink" title="✨ 实战"></a>✨ 实战</h3><p>以某网站为例，演示线程池和单线程两种方式爬取的差异</p>
+<pre><code class="hljs python"><span class="hljs-comment"># coding: utf-8</span>
+<span class="hljs-keyword">import</span> requests
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor, as_completed
+<span class="hljs-keyword">import</span> time
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">from</span> requests <span class="hljs-keyword">import</span> adapters
+
+<span class="hljs-keyword">from</span> proxy <span class="hljs-keyword">import</span> get_proxies
+
+headers = &#123;
+    <span class="hljs-string">"Host"</span>: <span class="hljs-string">"splcgk.court.gov.cn"</span>,
+    <span class="hljs-string">"Origin"</span>: <span class="hljs-string">"https://splcgk.court.gov.cn"</span>,
+    <span class="hljs-string">"User-Agent"</span>: <span class="hljs-string">"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"</span>,
+    <span class="hljs-string">"Referer"</span>: <span class="hljs-string">"https://splcgk.court.gov.cn/gzfwww/ktgg"</span>,
+&#125;
+url = <span class="hljs-string">"https://splcgk.court.gov.cn/gzfwww/ktgglist?pageNo=1"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">spider</span><span class="hljs-params">(page)</span>:</span>
+    data = &#123;
+        <span class="hljs-string">"bt"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"fydw"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"pageNum"</span>: page,
+    &#125;
+    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> range(<span class="hljs-number">5</span>):
+        <span class="hljs-keyword">try</span>:
+            response = requests.post(url, headers=headers, data=data, proxies=get_proxies())
+            json_data = response.json()
+        <span class="hljs-keyword">except</span> (json.JSONDecodeError, adapters.SSLError):
+            <span class="hljs-keyword">continue</span>
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> &#123;&#125;
+
+    <span class="hljs-keyword">return</span> json_data
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">8</span>) <span class="hljs-keyword">as</span> t:
+        obj_list = []
+        begin = time.time()
+        <span class="hljs-keyword">for</span> page <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, <span class="hljs-number">15</span>):
+            obj = t.submit(spider, page)
+            obj_list.append(obj)
+
+        <span class="hljs-keyword">for</span> future <span class="hljs-keyword">in</span> as_completed(obj_list):
+            data = future.result()
+            print(data)
+            print(<span class="hljs-string">'*'</span> * <span class="hljs-number">50</span>)
+        times = time.time() - begin
+        print(times)
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+    main()</code></pre>
+
+<p>运行结果如下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/6/6/16b2cf5c38d862ef?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" srcset="/img/loading.gif" alt="多线程"></p>
+<p><strong>可以看到，14 页只花了 2 秒钟就爬完了</strong></p>
+<p>下面我们可以使用单线程来爬取，代码基本和上面的一样，加个单线程函数 代码如下:</p>
+<pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">single</span><span class="hljs-params">()</span>:</span>
+    begin = time.time()
+    <span class="hljs-keyword">for</span> page <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, <span class="hljs-number">15</span>):
+        data = spider(page)
+        print(data)
+        print(<span class="hljs-string">'*'</span> * <span class="hljs-number">50</span>)
+
+    times = time.time() - begin
+    print(times)
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+    single()</code></pre>
+
+<p>运行结果：</p>
+<p><img src="data:image/svg+xml;utf8," srcset="/img/loading.gif" alt="单线程"></p>
+<p><strong>可以看到，总共花了 19 秒。真是肉眼可见的差距啊！如果数据量大的话，运行时间差距会更大！</strong></p>
+<blockquote>
+<p>转自：<a href="https://juejin.im/post/5cf913cfe51d45105d63a4d0" target="_blank" rel="noopener">https://juejin.im/post/5cf913cfe51d45105d63a4d0</a></p>
+</blockquote>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Program/">Program</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/19/%E5%B7%A5%E5%85%B7%E7%BD%91%E7%AB%99%E6%B1%87%E6%80%BB/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">工具网站汇总</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/19/Matlab%E7%BB%98%E5%88%B6%E5%9B%BE%E7%BB%84/">
+                        <span class="hidden-mobile">Matlab绘制图组</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.14/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "MfqMCE7bV2FERa8qRoCPLY2f-gzGzoHsz",
+        app_key: "DtsHTEOjSeUmVFcPEUnoyEqR",
+        placeholder: "What to say",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["昵称"],
+        pageSize: "10",
+        lang: "en",
+        highlight: true,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?a42297b398451c11cf9852c2dfa19253";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Python线程池的创建和使用&nbsp;",
+      ],
+      cursorChar: "😘",
+      typeSpeed: 50,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
