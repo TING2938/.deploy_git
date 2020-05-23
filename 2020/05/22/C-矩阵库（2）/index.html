@@ -233,6 +233,7 @@ Vector&lt;T&gt; <span class="hljs-keyword">operator</span>[](<span class="hljs-k
 <span class="hljs-function">T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i)</span> <span class="hljs-keyword">noexcept</span></span>;
 <span class="hljs-function"><span class="hljs-keyword">const</span> T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i)</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
 <span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Matrix&lt;<span class="hljs-keyword">bool</span>&gt;&amp; bol)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
+
 <p>采用row major内存布局，索引若只含一维，则将矩阵视为一维向量进行索引，如<code>A[4] = 3</code>;<br>注意，可以采用<code>()</code>和<code>[]</code>两种方法进行索引，如<code>A(1, 2) = 5; B[4][3] = 6</code>，两种方法效果一样</p>
 <h3 id="重载运算符"><a href="#重载运算符" class="headerlink" title="重载运算符"></a>重载运算符</h3><p><strong>注意：矩阵所有运算都是将矩阵视为向量后的运算，并不涉及真正的矩阵运算。</strong></p>
 <p>例如，<code>mati A(3, 4), B(3, 4)</code></p>
@@ -268,8 +269,8 @@ Vector&lt;T&gt; <span class="hljs-keyword">operator</span>[](<span class="hljs-k
 <td>对<code>A</code>与<code>B</code>中对应元素求与运算，返回与<code>A</code>(或<code>B</code>)形状相同的bool型矩阵</td>
 </tr>
 <tr>
-<td>`A</td>
-<td></td>
+<td><code>A</code> &#124;&#124; <code>B</code></td>
+<td>对<code>A</code>与<code>B</code>中对应元素求或运算，返回与<code>A</code>(或<code>B</code>)形状相同的bool型矩阵</td>
 </tr>
 </tbody></table>
 <p>矩阵与数：</p>
@@ -319,7 +320,35 @@ Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">
 <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> S&gt;
 Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>||(<span class="hljs-keyword">const</span> Matrix&lt;S&gt;&amp; mat) <span class="hljs-keyword">const</span>;</code></pre>
 
-<h3 id="矩阵切片操作"><a href="#矩阵切片操作" class="headerlink" title="矩阵切片操作"></a>矩阵切片操作</h3><p>例如，<code>mati A(3, 4)</code><br>|操作                  |说明       |<br>|—                  |—       |<br>|<code>A.part(2, {1, 3})</code>  |第2行、第1到3列|<br>| <code>A.part({0, 2}, 1)</code> |第0到2行、第1列  |<br>| <code>A.part({0, 2}, {1, 3})</code>  |第0到2行、第1到3列   |<br>| <code>A.head(2)</code>         |前2行   |<br>| <code>A.tail(2)</code>         |后2行   |</p>
+<h3 id="矩阵切片操作"><a href="#矩阵切片操作" class="headerlink" title="矩阵切片操作"></a>矩阵切片操作</h3><p>例如，<code>mati A(3, 4)</code></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>A.part(2, {1, 3})</code></td>
+<td>第2行、第1到3列</td>
+</tr>
+<tr>
+<td><code>A.part({0, 2}, 1)</code></td>
+<td>第0到2行、第1列</td>
+</tr>
+<tr>
+<td><code>A.part({0, 2}, {1, 3})</code></td>
+<td>第0到2行、第1到3列</td>
+</tr>
+<tr>
+<td><code>A.head(2)</code></td>
+<td>前2行</td>
+</tr>
+<tr>
+<td><code>A.tail(2)</code></td>
+<td>后2行</td>
+</tr>
+</tbody></table>
 <pre><code class="hljs c++"><span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">part</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Rg&amp; row, <span class="hljs-keyword">const</span> Rg&amp; col)</span> <span class="hljs-keyword">const</span></span>;
 <span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">part</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> row, <span class="hljs-keyword">const</span> Rg&amp; rg, boolcopy = <span class="hljs-literal">false</span>)</span> <span class="hljs-keyword">const</span></span>;
 <span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">part</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Rg&amp; rg, <span class="hljs-keyword">size_t</span> col)</span> <span class="hljs-keyword">const</span></span>;
@@ -327,7 +356,91 @@ Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">
 <span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">head</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> row = <span class="hljs-number">10</span>)</span> <span class="hljs-keyword">const</span></span>;
 <span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">tail</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> row = <span class="hljs-number">10</span>)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
 
-<h3 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h3><p>例如，<code>mati A(3, 4), B(4, 5);</code><br>|操作                  |说明       |<br>|—                  |—       |<br>|<code>A.nrow()</code>|行数|<br>|<code>A.ncol()</code>|列数|<br>|<code>A.size()</code>|存入<code>std::array</code>的行列数|<br>|<code>A.size(0)</code>|行数|<br>|<code>A.size(1)</code>|列数|<br>|<code>A.capacity()</code>|内部指针的容量|<br>|<code>A.fill(3)</code>|用3填充整个矩阵|<br>|<code>A.resize(4, 5)</code>|重置大小为4行5列|<br>|<code>A.clear()</code>|使矩阵的行列数都为0|<br>|<code>A.fillRandom(std::uniform_int_distribution&lt;int&gt;(1, 6))</code>|用从1到6之间的均匀分布随机数填充，随机数用法参考标准库中<a href="https://en.cppreference.com/w/cpp/header/random" target="_blank" rel="noopener">随机数部分</a>|<br>|<code>A.dot(B)</code>|<code>A</code>与<code>B</code>的矩阵点乘|<br>|<code>A.transpose()</code>|转置|<br>|<code>A.max(COL)</code>|列方向上的最大值，返回向量|<br>|<code>A.min(COL)</code>|列方向上的最小值，返回向量|<br>|<code>A.sum(COL)</code>|列方向上的和，返回向量|<br>|<code>A.mean(COL)</code>|列方向上的平均值，返回向量|<br>|<code>A.stdev(COL)</code>|列方向上的标准差，返回向量|<br>|<code>A.max(2, COL)</code>|第2列上的最大值|<br>|<code>A.print(&quot;A:&quot;, std::cout, &quot;{:12}&quot;)</code>|向<code>std::cout</code>中打印输出<code>A</code>，提示符为<code>A:</code>，格式为<code>&quot;{:12}&quot;</code>|<br>`</p>
+<h3 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h3><p>例如，<code>mati A(3, 4), B(4, 5);</code></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>A.nrow()</code></td>
+<td>行数</td>
+</tr>
+<tr>
+<td><code>A.ncol()</code></td>
+<td>列数</td>
+</tr>
+<tr>
+<td><code>A.size()</code></td>
+<td>存入<code>std::array</code>的行列数</td>
+</tr>
+<tr>
+<td><code>A.size(0)</code></td>
+<td>行数</td>
+</tr>
+<tr>
+<td><code>A.size(1)</code></td>
+<td>列数</td>
+</tr>
+<tr>
+<td><code>A.capacity()</code></td>
+<td>内部指针的容量</td>
+</tr>
+<tr>
+<td><code>A.fill(3)</code></td>
+<td>用3填充整个矩阵</td>
+</tr>
+<tr>
+<td><code>A.resize(4, 5)</code></td>
+<td>重置大小为4行5列</td>
+</tr>
+<tr>
+<td><code>A.clear()</code></td>
+<td>使矩阵的行列数都为0</td>
+</tr>
+<tr>
+<td><code>A.fillRandom(std::uniform_int_distribution&lt;int&gt;(1, 6))</code></td>
+<td>用从1到6之间的均匀分布随机数填充，随机数用法参考标准库中<a href="https://en.cppreference.com/w/cpp/header/random" target="_blank" rel="noopener">随机数部分</a></td>
+</tr>
+<tr>
+<td><code>A.dot(B)</code></td>
+<td><code>A</code>与<code>B</code>的矩阵点乘</td>
+</tr>
+<tr>
+<td><code>A.transpose()</code></td>
+<td>转置</td>
+</tr>
+<tr>
+<td><code>A.max(COL)</code></td>
+<td>列方向上的最大值，返回向量</td>
+</tr>
+<tr>
+<td><code>A.min(COL)</code></td>
+<td>列方向上的最小值，返回向量</td>
+</tr>
+<tr>
+<td><code>A.sum(COL)</code></td>
+<td>列方向上的和，返回向量</td>
+</tr>
+<tr>
+<td><code>A.mean(COL)</code></td>
+<td>列方向上的平均值，返回向量</td>
+</tr>
+<tr>
+<td><code>A.stdev(COL)</code></td>
+<td>列方向上的标准差，返回向量</td>
+</tr>
+<tr>
+<td><code>A.max(2, COL)</code></td>
+<td>第2列上的最大值</td>
+</tr>
+<tr>
+<td><code>A.print(&quot;A:&quot;, std::cout, &quot;{:12}&quot;)</code></td>
+<td>向<code>std::cout</code>中打印输出<code>A</code>，提示符为<code>A:</code>，格式为<code>&quot;{:12}&quot;</code></td>
+</tr>
+</tbody></table>
 <pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">nrow</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
 <span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">ncol</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
 std::array&lt;size_t, 2&gt; size() const;
