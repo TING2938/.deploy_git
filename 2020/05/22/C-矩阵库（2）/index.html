@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 
 
@@ -68,7 +68,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/">
               <i class="iconfont icon-home-fill"></i>
-              Home</a>
+              首页</a>
           </li>
         
           
@@ -77,7 +77,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/archives/">
               <i class="iconfont icon-archive-fill"></i>
-              Archives</a>
+              归档</a>
           </li>
         
           
@@ -86,7 +86,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/categories/">
               <i class="iconfont icon-category-fill"></i>
-              Categories</a>
+              分类</a>
           </li>
         
           
@@ -95,7 +95,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/tags/">
               <i class="iconfont icon-tags-fill"></i>
-              Tags</a>
+              标签</a>
           </li>
         
           
@@ -104,7 +104,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/links/">
               <i class="iconfont icon-link-fill"></i>
-              Links</a>
+              友链</a>
           </li>
         
         
@@ -133,7 +133,7 @@
                 <div class="mt-3 post-meta">
                   <i class="iconfont icon-date-fill" aria-hidden="true"></i>
                   <time datetime="2020-05-22 14:44">
-                    May 22, 2020 pm
+                    2020年5月22日 下午
                   </time>
                 </div>
               
@@ -143,7 +143,7 @@
                   
                   <span class="post-meta mr-2">
                     <i class="iconfont icon-chart"></i>
-                    0 字
+                    717 字
                   </span>
                 
 
@@ -153,7 +153,7 @@
                       <i class="iconfont icon-clock-fill"></i>
                     
                     
-                    1
+                    10
                      分钟
                   </span>
                 
@@ -182,12 +182,78 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前介绍了一些<a href="https://ting2938.github.io/2020/05/20/C-%E7%9F%A9%E9%98%B5%E5%BA%93/" target="_blank" rel="noopener">常见的C++矩阵库</a>，这些矩阵库用起来都很方便，但是在本人的科研过程中并不会用到这些矩阵库的高级功能（如LU分解、求逆矩阵等），只是需要其作为容器存放数据，而且需要一些定制功能（比如元素查找、求积分微分等），因此我写了一个简单的、只包含头文件的矩阵库。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>由于是只包含头文件的，所以很容易包含到其他项目中，安装方法如下：</p>
+<pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/TING2938/Analysis.git
+cp -r Analysis/gmxProject/Analysis/Core/include path/to/your/project</code></pre>
+<p>然后设置项目中包含<code>include</code>文件夹就可以用了。</p>
+<h2 id="简单应用"><a href="#简单应用" class="headerlink" title="简单应用"></a>简单应用</h2><p>一个简单的Demo如下：</p>
+<pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;itp/core&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span>** argv)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-function">mati <span class="hljs-title">A</span><span class="hljs-params">(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)</span></span>; 
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i != A.nrow(); ++i)
+    &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> j = <span class="hljs-number">0</span>; j != A.ncol(); ++j)
+        &#123;
+            A(i, j) = <span class="hljs-number">3</span>*i+<span class="hljs-number">5</span>*j;
+            <span class="hljs-comment">// 也可以用方括号进行索引</span>
+            <span class="hljs-comment">// A[i][j] = 3*i+5*j; </span>
+        &#125;
+    &#125;
+
+    A.<span class="hljs-built_in">print</span>(<span class="hljs-string">"A:"</span>);
+&#125;</code></pre>
+<p>会得到如下输出:</p>
+<pre><code class="hljs plain">A:
+           0           5          10          15
+           3           8          13          18
+           6          11          16          21</code></pre>
+<p>其中，<code>mati</code>类型等为一些常用的类型，<code>using mati = itp::Matrix&lt;int&gt;</code>，其他类型如<code>matd</code>、<code>matu</code>、<code>matb</code>分别对应模板参数为<code>double</code>、<code>size_t</code>、<code>bool</code>的版本。</p>
+<h2 id="API介绍"><a href="#API介绍" class="headerlink" title="API介绍"></a>API介绍</h2><h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><pre><code class="hljs c++">Matrix();
+Matrix(<span class="hljs-keyword">size_t</span> nrow, <span class="hljs-keyword">size_t</span> ncol); <span class="hljs-comment">// 指定行列大小，初始值未定义</span>
+Matrix(<span class="hljs-keyword">size_t</span> nrow, <span class="hljs-keyword">size_t</span> ncol, T init); <span class="hljs-comment">// 指定初始值为 init</span>
+Matrix(<span class="hljs-keyword">size_t</span> nrow, <span class="hljs-keyword">size_t</span> ncol, conststd::<span class="hljs-built_in">initializer_list</span>&lt;T&gt;&amp; it); <span class="hljs-comment">//指定行列大小，并由初始化列表初始化，如 mati A(2, 3, &#123;2, 3, 4, 5, 5, 6&#125;);</span>
+Matrix(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">initializer_list</span>&lt;conststd::<span class="hljs-built_in">initializer_list</span>&lt;T&gt;&gt;&amp; it); <span class="hljs-comment">// 由初始化列表初始化，如 mati B = &#123;&#123;5, 6, 8&#125;, &#123;7, 10, 13&#125;&#125;; 初始化为2行3列的矩阵</span>
+Matrix(T* p, <span class="hljs-keyword">size_t</span> nrow, <span class="hljs-keyword">size_t</span> ncol, <span class="hljs-keyword">bool</span> copy= <span class="hljs-literal">true</span>); <span class="hljs-comment">// 由指针初始化，默认拷贝指针指向的资源，copy=false时不拷贝资源，此时p的生命周期一定要大于矩阵的生命周期</span>
+Matrix(Matrix&lt;T&gt;&amp;&amp; mat) <span class="hljs-keyword">noexcept</span>; <span class="hljs-comment">// 移动构造</span>
+Matrix(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat); <span class="hljs-comment">// 拷贝构造</span>
+~Matrix(); <span class="hljs-comment">// 析构函数</span>
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>=(Matrix&lt;T&gt;&amp;&amp; mat) <span class="hljs-keyword">noexcept</span>; <span class="hljs-comment">// 移动赋值运算符</span>
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat); <span class="hljs-comment">// 拷贝赋值运算符</span></code></pre>
+
+<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code class="hljs c++">T* <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">size_t</span> i) <span class="hljs-keyword">noexcept</span>; 
+<span class="hljs-keyword">const</span> T* <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">size_t</span> i) <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+Vector&lt;T&gt; <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">const</span> Matrix&lt;<span class="hljs-keyword">bool</span>&gt;&amp; bol) <span class="hljs-keyword">const</span>;
+<span class="hljs-function">T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i, <span class="hljs-keyword">size_t</span> j)</span> <span class="hljs-keyword">noexcept</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">const</span> T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i, <span class="hljs-keyword">size_t</span> j)</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+<span class="hljs-comment">// row major</span>
+<span class="hljs-function">T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i)</span> <span class="hljs-keyword">noexcept</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">const</span> T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i)</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+<span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Matrix&lt;<span class="hljs-keyword">bool</span>&gt;&amp; bol)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
+<p>采用row major内存布局，索引若只含一维，则将矩阵视为一维向量进行索引，如<code>A[4] = 3</code>;<br>注意，可以采用<code>()</code>和<code>[]</code>两种方法进行索引，如<code>A(1, 2) = 5; B[4][3] = 6</code>，两种方法效果一样</p>
+
             </article>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Program/">Program</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C/">C++</a>
+                    
+                  </div>
                 
               </div>
               
@@ -253,7 +319,7 @@
     
       <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
         <div id="toc">
-  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
   <div id="tocbot"></div>
 </div>
 
@@ -280,7 +346,7 @@
   <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
         <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -289,7 +355,7 @@
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
           <label data-error="x" data-success="v"
-                 for="local-search-input">keyword</label>
+                 for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
