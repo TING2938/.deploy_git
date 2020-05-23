@@ -143,7 +143,7 @@
                   
                   <span class="post-meta mr-2">
                     <i class="iconfont icon-chart"></i>
-                    717 字
+                    1.9k 字
                   </span>
                 
 
@@ -153,7 +153,7 @@
                       <i class="iconfont icon-clock-fill"></i>
                     
                     
-                    10
+                    30
                      分钟
                   </span>
                 
@@ -234,7 +234,132 @@ Vector&lt;T&gt; <span class="hljs-keyword">operator</span>[](<span class="hljs-k
 <span class="hljs-function"><span class="hljs-keyword">const</span> T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i)</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
 <span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Matrix&lt;<span class="hljs-keyword">bool</span>&gt;&amp; bol)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
 <p>采用row major内存布局，索引若只含一维，则将矩阵视为一维向量进行索引，如<code>A[4] = 3</code>;<br>注意，可以采用<code>()</code>和<code>[]</code>两种方法进行索引，如<code>A(1, 2) = 5; B[4][3] = 6</code>，两种方法效果一样</p>
+<h3 id="重载运算符"><a href="#重载运算符" class="headerlink" title="重载运算符"></a>重载运算符</h3><p><strong>注意：矩阵所有运算都是将矩阵视为向量后的运算，并不涉及真正的矩阵运算。</strong></p>
+<p>例如，<code>mati A(3, 4), B(3, 4)</code></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>A + 3</code></td>
+<td><code>A</code>所有元素加3</td>
+</tr>
+<tr>
+<td><code>A + B</code></td>
+<td><code>A</code>与<code>B</code>对应元素相加</td>
+</tr>
+<tr>
+<td><code>A &gt; 2</code></td>
+<td><code>A</code>中元素分别与2比较，返回与<code>A</code>形状相同的bool型矩阵</td>
+</tr>
+<tr>
+<td><code>A &gt; B</code></td>
+<td><code>A</code>中元素分别与<code>B</code>中元素比较，返回与<code>A</code>(或<code>B</code>)形状相同的bool型矩阵</td>
+</tr>
+<tr>
+<td><code>!A</code></td>
+<td>对<code>A</code>中元素分别求非运算，返回与<code>A</code>形状相同的bool型矩阵</td>
+</tr>
+<tr>
+<td><code>A &amp;&amp; B</code></td>
+<td>对<code>A</code>与<code>B</code>中对应元素求与运算，返回与<code>A</code>(或<code>B</code>)形状相同的bool型矩阵</td>
+</tr>
+<tr>
+<td>`A</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>矩阵与数：</p>
+<pre><code class="hljs c++">Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>+=(<span class="hljs-keyword">const</span> T&amp; val);
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>-=(<span class="hljs-keyword">const</span> T&amp; val);
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>*=(<span class="hljs-keyword">const</span> T&amp; val);
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>/=(<span class="hljs-keyword">const</span> T&amp; val);
 
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>+(<span class="hljs-keyword">const</span> T&amp; val) <span class="hljs-keyword">const</span>;
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>-(<span class="hljs-keyword">const</span> T&amp; val) <span class="hljs-keyword">const</span>;
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>*(<span class="hljs-keyword">const</span> T&amp; val) <span class="hljs-keyword">const</span>;
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>/(<span class="hljs-keyword">const</span> T&amp; val) <span class="hljs-keyword">const</span>;</code></pre>
+
+<p>矩阵与矩阵：</p>
+<pre><code class="hljs c++">Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>+=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat);
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>-=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat);
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>*=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat);
+Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>/=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat);
+
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>+(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>-(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>*(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;T&gt; <span class="hljs-keyword">operator</span>/(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;</code></pre>
+
+<p>矩阵与数之间的比较：</p>
+<pre><code class="hljs c++">Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>==(<span class="hljs-keyword">const</span> T&amp; value) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>!=(<span class="hljs-keyword">const</span> T&amp; value) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&gt;(<span class="hljs-keyword">const</span> T&amp; value) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&lt;(<span class="hljs-keyword">const</span> T&amp; value) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&gt;=(<span class="hljs-keyword">const</span> T&amp; value) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&lt;=(<span class="hljs-keyword">const</span> T&amp; value) <span class="hljs-keyword">const</span>;</code></pre>
+
+<p>矩阵与矩阵之间的比较：</p>
+<pre><code class="hljs c++">Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>==(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>!=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&gt;(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&lt;(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&gt;=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&lt;=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat) <span class="hljs-keyword">const</span>;</code></pre>
+
+<p>逻辑运算符：</p>
+<pre><code class="hljs c++">Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>!() <span class="hljs-keyword">const</span>;
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> S&gt;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>&amp;&amp;(<span class="hljs-keyword">const</span> Matrix&lt;S&gt;&amp; mat) <span class="hljs-keyword">const</span>;
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> S&gt;
+Matrix&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-keyword">operator</span>||(<span class="hljs-keyword">const</span> Matrix&lt;S&gt;&amp; mat) <span class="hljs-keyword">const</span>;</code></pre>
+
+<h3 id="矩阵切片操作"><a href="#矩阵切片操作" class="headerlink" title="矩阵切片操作"></a>矩阵切片操作</h3><p>例如，<code>mati A(3, 4)</code><br>|操作                  |说明       |<br>|—                  |—       |<br>|<code>A.part(2, {1, 3})</code>  |第2行、第1到3列|<br>| <code>A.part({0, 2}, 1)</code> |第0到2行、第1列  |<br>| <code>A.part({0, 2}, {1, 3})</code>  |第0到2行、第1到3列   |<br>| <code>A.head(2)</code>         |前2行   |<br>| <code>A.tail(2)</code>         |后2行   |</p>
+<pre><code class="hljs c++"><span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">part</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Rg&amp; row, <span class="hljs-keyword">const</span> Rg&amp; col)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">part</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> row, <span class="hljs-keyword">const</span> Rg&amp; rg, boolcopy = <span class="hljs-literal">false</span>)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">part</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Rg&amp; rg, <span class="hljs-keyword">size_t</span> col)</span> <span class="hljs-keyword">const</span></span>;
+
+<span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">head</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> row = <span class="hljs-number">10</span>)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">tail</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> row = <span class="hljs-number">10</span>)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
+
+<h3 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h3><p>例如，<code>mati A(3, 4), B(4, 5);</code><br>|操作                  |说明       |<br>|—                  |—       |<br>|<code>A.nrow()</code>|行数|<br>|<code>A.ncol()</code>|列数|<br>|<code>A.size()</code>|存入<code>std::array</code>的行列数|<br>|<code>A.size(0)</code>|行数|<br>|<code>A.size(1)</code>|列数|<br>|<code>A.capacity()</code>|内部指针的容量|<br>|<code>A.fill(3)</code>|用3填充整个矩阵|<br>|<code>A.resize(4, 5)</code>|重置大小为4行5列|<br>|<code>A.clear()</code>|使矩阵的行列数都为0|<br>|<code>A.fillRandom(std::uniform_int_distribution&lt;int&gt;(1, 6))</code>|用从1到6之间的均匀分布随机数填充，随机数用法参考标准库中<a href="https://en.cppreference.com/w/cpp/header/random" target="_blank" rel="noopener">随机数部分</a>|<br>|<code>A.dot(B)</code>|<code>A</code>与<code>B</code>的矩阵点乘|<br>|<code>A.transpose()</code>|转置|<br>|<code>A.max(COL)</code>|列方向上的最大值，返回向量|<br>|<code>A.min(COL)</code>|列方向上的最小值，返回向量|<br>|<code>A.sum(COL)</code>|列方向上的和，返回向量|<br>|<code>A.mean(COL)</code>|列方向上的平均值，返回向量|<br>|<code>A.stdev(COL)</code>|列方向上的标准差，返回向量|<br>|<code>A.max(2, COL)</code>|第2列上的最大值|<br>|<code>A.print(&quot;A:&quot;, std::cout, &quot;{:12}&quot;)</code>|向<code>std::cout</code>中打印输出<code>A</code>，提示符为<code>A:</code>，格式为<code>&quot;{:12}&quot;</code>|<br>`</p>
+<pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">nrow</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">ncol</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
+std::array&lt;size_t, 2&gt; size() const;
+<span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">size</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i)</span> <span class="hljs-keyword">const</span></span>; <span class="hljs-comment">/* i &lt; 2. */</span>
+<span class="hljs-function"><span class="hljs-keyword">const</span> <span class="hljs-keyword">size_t</span>&amp; <span class="hljs-title">capacity</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">size_t</span>&amp; <span class="hljs-title">capacity</span><span class="hljs-params">()</span></span>;
+<span class="hljs-function">Matrix&lt;T&gt;&amp; <span class="hljs-title">fill</span><span class="hljs-params">(<span class="hljs-keyword">const</span> T&amp; value)</span></span>;
+<span class="hljs-function">Matrix&lt;T&gt;&amp; <span class="hljs-title">resize</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> nrow, <span class="hljs-keyword">size_t</span> ncol)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">clear</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-comment">/* https://en.cppreference.com/w/cpp/header/random */</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> Distribution&gt;
+<span class="hljs-function">Matrix&lt;T&gt;&amp; <span class="hljs-title">fillRandom</span><span class="hljs-params">(Distribution&amp;&amp; dist)</span></span>;
+
+<span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">dot</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Matrix&lt;T&gt; <span class="hljs-title">transpose</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
+
+<span class="hljs-comment">/* calculate value of block  */</span>
+<span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">max</span><span class="hljs-params">(Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">min</span><span class="hljs-params">(Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Vector&lt;T&gt; <span class="hljs-title">sum</span><span class="hljs-params">(Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Vector&lt;<span class="hljs-keyword">double</span>&gt; <span class="hljs-title">mean</span><span class="hljs-params">(Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">Vector&lt;<span class="hljs-keyword">double</span>&gt; <span class="hljs-title">stdev</span><span class="hljs-params">(Axis axis = COL, <span class="hljs-keyword">bool</span> sample = <span class="hljs-literal">true</span>)</span> <span class="hljs-keyword">const</span></span>;
+
+<span class="hljs-comment">/* calculate value of row or column */</span>
+<span class="hljs-function">T <span class="hljs-title">max</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> n, Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">T <span class="hljs-title">min</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> n, Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function">T <span class="hljs-title">sum</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> n, Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">mean</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> n, Axis axis = COL)</span> <span class="hljs-keyword">const</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">stdev</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> n, Axis axis = COL, <span class="hljs-keyword">bool</span> sample = <span class="hljs-literal">true</span>)</span> <span class="hljs-keyword">const</span></span>;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> str = <span class="hljs-string">""</span>, <span class="hljs-built_in">std</span>::ostream&amp; os = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span>, <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> fmt=<span class="hljs-string">"&#123;:12&#125;"</span>)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
             </article>
             <hr>
             <div>
