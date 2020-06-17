@@ -186,13 +186,14 @@
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>由于是只包含头文件的，所以很容易包含到其他项目中，安装方法如下：</p>
 <pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/TING2938/Analysis.git
 cp -r Analysis/gmxProject/Analysis/Core/include path/to/your/project</code></pre>
+
 <p>然后设置项目中包含<code>include</code>文件夹就可以用了。</p>
 <h2 id="简单应用"><a href="#简单应用" class="headerlink" title="简单应用"></a>简单应用</h2><p>一个简单的Demo如下：</p>
 <pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;itp/core&gt;</span></span>
 
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span>** argv)</span></span>
 <span class="hljs-function"></span>&#123;
-    <span class="hljs-function">mati <span class="hljs-title">A</span><span class="hljs-params">(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)</span></span>; 
+    <span class="hljs-function">mati <span class="hljs-title">A</span><span class="hljs-params">(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)</span></span>;
 
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i != A.nrow(); ++i)
     &#123;
@@ -200,17 +201,19 @@ cp -r Analysis/gmxProject/Analysis/Core/include path/to/your/project</code></pre
         &#123;
             A(i, j) = <span class="hljs-number">3</span>*i+<span class="hljs-number">5</span>*j;
             <span class="hljs-comment">// 也可以用方括号进行索引</span>
-            <span class="hljs-comment">// A[i][j] = 3*i+5*j; </span>
+            <span class="hljs-comment">// A[i][j] = 3*i+5*j;</span>
         &#125;
     &#125;
 
     A.<span class="hljs-built_in">print</span>(<span class="hljs-string">"A:"</span>);
 &#125;</code></pre>
+
 <p>会得到如下输出:</p>
 <pre><code class="hljs plain">A:
            0           5          10          15
            3           8          13          18
            6          11          16          21</code></pre>
+
 <p>其中，<code>mati</code>类型等为一些常用的类型，<code>using mati = itp::Matrix&lt;int&gt;</code>，其他类型如<code>matd</code>、<code>matu</code>、<code>matb</code>分别对应模板参数为<code>double</code>、<code>size_t</code>、<code>bool</code>的版本。</p>
 <h2 id="API介绍"><a href="#API介绍" class="headerlink" title="API介绍"></a>API介绍</h2><h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><pre><code class="hljs c++">Matrix();
 Matrix(<span class="hljs-keyword">size_t</span> nrow, <span class="hljs-keyword">size_t</span> ncol); <span class="hljs-comment">// 指定行列大小，初始值未定义</span>
@@ -224,7 +227,7 @@ Matrix(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat); <span 
 Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>=(Matrix&lt;T&gt;&amp;&amp; mat) <span class="hljs-keyword">noexcept</span>; <span class="hljs-comment">// 移动赋值运算符</span>
 Matrix&lt;T&gt;&amp; <span class="hljs-keyword">operator</span>=(<span class="hljs-keyword">const</span> Matrix&lt;T&gt;&amp; mat); <span class="hljs-comment">// 拷贝赋值运算符</span></code></pre>
 
-<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code class="hljs c++">T* <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">size_t</span> i) <span class="hljs-keyword">noexcept</span>; 
+<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code class="hljs c++">T* <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">size_t</span> i) <span class="hljs-keyword">noexcept</span>;
 <span class="hljs-keyword">const</span> T* <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">size_t</span> i) <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
 Vector&lt;T&gt; <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">const</span> Matrix&lt;<span class="hljs-keyword">bool</span>&gt;&amp; bol) <span class="hljs-keyword">const</span>;
 <span class="hljs-function">T&amp; <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> i, <span class="hljs-keyword">size_t</span> j)</span> <span class="hljs-keyword">noexcept</span></span>;
@@ -473,6 +476,8 @@ std::array&lt;size_t, 2&gt; size() const;
 <span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">stdev</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> n, Axis axis = COL, <span class="hljs-keyword">bool</span> sample = <span class="hljs-literal">true</span>)</span> <span class="hljs-keyword">const</span></span>;
 
 <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> str = <span class="hljs-string">""</span>, <span class="hljs-built_in">std</span>::ostream&amp; os = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span>, <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> fmt=<span class="hljs-string">"&#123;:12&#125;"</span>)</span> <span class="hljs-keyword">const</span></span>;</code></pre>
+
+
 
             </article>
             <hr>

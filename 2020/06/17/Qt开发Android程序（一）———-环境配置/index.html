@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>Matlab绘制局部放大图 - Hexo</title>
+  <title>Qt开发Android程序（一）——— 环境配置 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
@@ -132,8 +132,8 @@
               
                 <div class="mt-3 post-meta">
                   <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-                  <time datetime="2020-05-27 11:14">
-                    2020年5月27日 上午
+                  <time datetime="2020-06-17 12:08">
+                    2020年6月17日 中午
                   </time>
                 </div>
               
@@ -143,7 +143,7 @@
                   
                   <span class="post-meta mr-2">
                     <i class="iconfont icon-chart"></i>
-                    140 字
+                    342 字
                   </span>
                 
 
@@ -153,7 +153,7 @@
                       <i class="iconfont icon-clock-fill"></i>
                     
                     
-                    2
+                    4
                      分钟
                   </span>
                 
@@ -182,57 +182,78 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <p>可以采用<code>axes</code>函数在当前图中插入一个小图的方法绘制局部放大图。<br>如下代码：</p>
-<pre><code class="hljs matlab">func = &#123;@(x) <span class="hljs-built_in">sin</span>(x), @(x) <span class="hljs-built_in">cos</span>(x)&#125;;
-x = <span class="hljs-built_in">linspace</span>(<span class="hljs-number">0</span>, <span class="hljs-number">15</span>);
+              <h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>Qt Creator(QC)作为IDE，在安装QC时需要选择安装Android模块，此外，还需安装NDK，JDK，SDK开发套件。</p>
+<ul>
+<li><p>NDK</p>
+<p>  下载<a href="https://developer.android.com/ndk/downloads/index.html" target="_blank" rel="noopener">android-ndk-r21-windows-x86_64.zip</a>后安装</p>
+</li>
+<li><p>JDK</p>
+<p>  下载<a href="http://jdk.android-studio.org" target="_blank" rel="noopener">jdk-8u5</a>后安装</p>
+</li>
+<li><p>SDK</p>
+<p>  到<a href="http://sdk.android-studio.org" target="_blank" rel="noopener">此处</a>下载最新版SDK，SDK安装好后，打开SDK Manager，安装如下图所示项目：</p>
+<p>  <img src="/images/QfA_SDK1.png" srcset="/img/loading.gif" alt=""></p>
+<p>  这里选择Android 7.1.1(API 25)套件</p>
+<p>  <img src="/images/QfA_SDK2.png" srcset="/img/loading.gif" alt=""></p>
+<p>  <img src="/images/QfA_SDK3.png" srcset="/img/loading.gif" alt=""></p>
+</li>
+<li><p>配置Qt Creator</p>
+<p>打开菜单栏工具-选项-设备，将SDK，JDK，NDK路径填入</p>
+<p><img src="/images/QC1.png" srcset="/img/loading.gif" alt=""></p>
+</li>
+<li><p>配置虚拟机(AVD)</p>
+<p>打开AVD manager，点击右侧Creat创建一个虚拟机，参数配置如下（如果自己手机方便的话也可以直接用手机调试）：</p>
+<p><img src="/images/AVD(1).png" srcset="/img/loading.gif" alt=""></p>
+<p>点击Start查看运行效果</p>
+<p><img src="/images/AVD(2).png" srcset="/img/loading.gif" alt=""></p>
+</li>
+</ul>
+<h2 id="简单的例子"><a href="#简单的例子" class="headerlink" title="简单的例子"></a>简单的例子</h2><ol>
+<li><p>打开Qt Creator，新建一个QWidget项目，创建一个按钮</p>
+ <pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"mainwindow.h"</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;QVBoxLayout&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;QHBoxLayout&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;QPushButton&gt;</span></span>
 
-<span class="hljs-built_in">figure</span>;
-ax1 = axes(<span class="hljs-string">'Position'</span>, [<span class="hljs-number">0.11</span>, <span class="hljs-number">0.15</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.8</span>]); <span class="hljs-comment">% 主图</span>
-ax2 = axes(<span class="hljs-string">'Position'</span>, [<span class="hljs-number">0.5</span>, <span class="hljs-number">0.65</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.25</span>]); <span class="hljs-comment">% 局部图</span>
+MainWindow::MainWindow(QWidget *parent)
+    : QWidget(parent)
+&#123;
+    <span class="hljs-keyword">this</span>-&gt;setupUI();
+&#125;
 
-<span class="hljs-keyword">for</span> <span class="hljs-built_in">i</span>=<span class="hljs-number">1</span>:<span class="hljs-built_in">length</span>(func)
-    <span class="hljs-built_in">plot</span>(ax1, x, func&#123;<span class="hljs-built_in">i</span>&#125;(x));
-    <span class="hljs-built_in">hold</span>(ax1, <span class="hljs-string">'on'</span>);
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">MainWindow::setupUI</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">auto</span> vbox = <span class="hljs-keyword">new</span> QVBoxLayout();
+    <span class="hljs-keyword">this</span>-&gt;setLayout(vbox);
 
-    <span class="hljs-built_in">plot</span>(ax2, x, func&#123;<span class="hljs-built_in">i</span>&#125;(x));
-    <span class="hljs-built_in">hold</span>(ax2, <span class="hljs-string">'on'</span>);
-<span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">auto</span> btn =<span class="hljs-keyword">new</span> QPushButton(<span class="hljs-string">"Click here"</span>);
+    <span class="hljs-keyword">auto</span> hbox = <span class="hljs-keyword">new</span> QHBoxLayout();
+    hbox-&gt;addStretch(<span class="hljs-number">1</span>);
+    hbox-&gt;addWidget(btn);
+    hbox-&gt;addStretch(<span class="hljs-number">1</span>);
 
-xlim(ax1, [<span class="hljs-number">0</span>, <span class="hljs-number">15</span>])
-ylim(ax1, [<span class="hljs-number">-1</span>, <span class="hljs-number">3</span>])
-xlabel(ax1, <span class="hljs-string">'$x$'</span>, <span class="hljs-string">'Interpreter'</span>, <span class="hljs-string">'latex'</span>);
-ylabel(ax1, <span class="hljs-string">'$y$'</span>, <span class="hljs-string">'Interpreter'</span>, <span class="hljs-string">'latex'</span>);
-<span class="hljs-built_in">legend</span>(ax1, &#123;<span class="hljs-string">'$sin$'</span>, <span class="hljs-string">'$cos$'</span>&#125;, <span class="hljs-string">'Location'</span>, <span class="hljs-string">'northwest'</span>, <span class="hljs-string">'Interpreter'</span>, <span class="hljs-string">'latex'</span>)
+    vbox-&gt;addLayout(hbox);
 
-xlim(ax2, [<span class="hljs-number">2</span>, <span class="hljs-number">6</span>])
-ylim(ax2, [<span class="hljs-number">-1</span>, <span class="hljs-number">-0.3</span>])</code></pre>
-
-<p>输出：</p>
-<div align=center>
-<img src="/images/sub_figure.svg" srcset="/img/loading.gif" width="50%" height="50%">
-</div>
+    <span class="hljs-built_in">connect</span>(btn, &amp;QPushButton::clicked, [=]()&#123;
+        btn-&gt;setText(<span class="hljs-string">"Changed"</span>);
+    &#125;);
+&#125;</code></pre></li>
+<li><p>点击QC左侧项目，配置Android项目</p>
+<p>在Build步骤里，ABIs选择<strong>x86_64</strong>，Android build SDK选择<strong>android-25</strong></p>
+<p><img src="/images/QC3.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="/images/QC4.png" srcset="/img/loading.gif" alt=""></p>
+</li>
+<li><p>调试</p>
+<p>点击左下角锤子符号编译，点击绿色三角运行，选择前面配置的虚拟机作为调试机，查看运行效果</p>
+<p><img src="/images/AVD(3).png" srcset="/img/loading.gif" alt=""></p>
+</li>
+</ol>
 
             </article>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/Program/">Program</a>
-                    
-                      <a class="hover-with-bg" href="/categories/Research/">Research</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/Matlab/">Matlab</a>
-                    
-                  </div>
                 
               </div>
               
@@ -241,18 +262,12 @@ ylim(ax2, [<span class="hljs-number">-1</span>, <span class="hljs-number">-0.3</
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/06/17/Qt%E5%BC%80%E5%8F%91Android%E7%A8%8B%E5%BA%8F%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E2%80%94-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Qt开发Android程序（一）——— 环境配置</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </div>
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/05/22/C-%E7%9F%A9%E9%98%B5%E5%BA%93%EF%BC%882%EF%BC%89/">
-                        <span class="hidden-mobile">C++矩阵库（2）</span>
+                      <a href="/2020/05/27/Matlab%E7%BB%98%E5%88%B6%E5%B1%80%E9%83%A8%E6%94%BE%E5%A4%A7%E5%9B%BE/">
+                        <span class="hidden-mobile">Matlab绘制局部放大图</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -469,7 +484,7 @@ ylim(ax2, [<span class="hljs-number">-1</span>, <span class="hljs-number">-0.3</
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Matlab绘制局部放大图&nbsp;",
+        "Qt开发Android程序（一）——— 环境配置&nbsp;",
       ],
       cursorChar: "😘",
       typeSpeed: 50,
